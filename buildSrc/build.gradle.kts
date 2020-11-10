@@ -11,7 +11,8 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 val props = Properties().apply {
