@@ -13,6 +13,11 @@ open class ApiValidationExtension {
     public var validationDisabled = false
 
     /**
+     * Include inline reified methods in API dump (even though they are not technically public binary API).
+     */
+    public var includeReified = false
+
+    /**
      * Fully qualified package names that are not consider public API.
      * For example, it could be `kotlinx.coroutines.internal` or `kotlinx.serialization.implementation`.
      */

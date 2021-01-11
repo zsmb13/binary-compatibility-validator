@@ -41,7 +41,7 @@ public fun Sequence<InputStream>.loadApiFromJvmClasses(visibilityFilter: (String
                         it.isEffectivelyPublic(classAccess, mVisibility)
                     }
 
-                val allMethods = methods.map { it.toMethodBinarySignature() }
+                val allMethods = methods.map { it.toMethodBinarySignature(mVisibility) }
                 // Signatures marked with @PublishedApi
                 val publishedApiSignatures = allMethods.filter {
                     it.isPublishedApi
@@ -79,6 +79,16 @@ internal fun List<ClassBinarySignature>.filterOutAnnotated(targetAnnotations: Se
             it.isEffectivelyPublic,
             it.isNotUsedWhenEmpty,
             it.annotations
+        )
+    }
+}
+
+internal fun List<ClassBinarySignature>.filterOutReified(includeReified: Boolean): List<ClassBinarySignature> {
+    if (includeReified) return this
+
+    return map { classBinarySignature ->
+        classBinarySignature.copy(
+            memberSignatures = classBinarySignature.memberSignatures.filterNot { it.isReified }
         )
     }
 }

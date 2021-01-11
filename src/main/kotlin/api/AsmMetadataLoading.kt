@@ -49,6 +49,7 @@ fun ClassNode.isPublishedApi() = findAnnotation(publishedApiAnnotationName, incl
 fun MethodNode.isPublishedApi() = findAnnotation(publishedApiAnnotationName, includeInvisible = true) != null
 fun FieldNode.isPublishedApi() = findAnnotation(publishedApiAnnotationName, includeInvisible = true) != null
 
+fun MethodNode.isReified(classVisibility: ClassVisibility?) = classVisibility?.findMember(JvmMethodSignature(name, desc))?.isReified ?: false
 
 fun ClassNode.isDefaultImpls(metadata: KotlinClassMetadata?) = isInner() && name.endsWith("\$DefaultImpls") && metadata.isSyntheticClass()
 

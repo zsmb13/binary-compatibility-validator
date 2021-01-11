@@ -31,6 +31,7 @@ interface MemberBinarySignature {
     val desc: String get() = jvmMember.desc
     val access: AccessFlags
     val isPublishedApi: Boolean
+    val isReified: Boolean
     val annotations: List<AnnotationNode>
 
     fun isEffectivelyPublic(classAccess: AccessFlags, classVisibility: ClassVisibility?) =
@@ -47,6 +48,7 @@ interface MemberBinarySignature {
 data class MethodBinarySignature(
     override val jvmMember: JvmMethodSignature,
     override val isPublishedApi: Boolean,
+    override val isReified: Boolean,
     override val access: AccessFlags,
     override val annotations: List<AnnotationNode>
 ) : MemberBinarySignature {
@@ -106,12 +108,14 @@ data class MethodBinarySignature(
     }
 }
 
-fun MethodNode.toMethodBinarySignature() =
+fun MethodNode.toMethodBinarySignature(classVisibility: ClassVisibility?): MethodBinarySignature =
     MethodBinarySignature(
         JvmMethodSignature(name, desc),
         isPublishedApi(),
+        isReified(classVisibility),
         AccessFlags(access),
-        annotations(visibleAnnotations, invisibleAnnotations))
+        annotations(visibleAnnotations, invisibleAnnotations)
+    )
 
 data class FieldBinarySignature(
     override val jvmMember: JvmFieldSignature,
@@ -121,6 +125,8 @@ data class FieldBinarySignature(
 ) : MemberBinarySignature {
     override val signature: String
         get() = "${access.getModifierString()} field $name $desc"
+
+    override val isReified: Boolean = false
 
     override fun findMemberVisibility(classVisibility: ClassVisibility?): MemberVisibility? {
         return super.findMemberVisibility(classVisibility)

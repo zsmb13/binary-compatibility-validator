@@ -56,7 +56,7 @@ class CasesPublicAPITest {
         check(testClasses.isNotEmpty()) { "No class files are found in paths: $testClassPaths" }
 
         val testClassStreams = testClasses.asSequence().filter { it.name.endsWith(".class") }.map { it.inputStream() }
-        val api = testClassStreams.loadApiFromJvmClasses().filterOutNonPublic()
+        val api = testClassStreams.loadApiFromJvmClasses().filterOutNonPublic().filterOutReified(true)
         val target = baseOutputPath.resolve(testClassRelativePath).resolve(testName.methodName + ".txt")
         api.dumpAndCompareWith(target)
     }

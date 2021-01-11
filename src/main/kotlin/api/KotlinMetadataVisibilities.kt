@@ -38,8 +38,7 @@ fun ClassVisibility.isPublic(isPublishedApi: Boolean) =
     isPublic(visibility, isPublishedApi)
 
 fun MemberVisibility.isPublic(isPublishedApi: Boolean) =
-        // Assuming isReified implies inline
-        !isReified && isPublic(visibility, isPublishedApi)
+    isPublic(visibility, isPublishedApi)
 
 fun MemberVisibility.isInternal(): Boolean = visibility != null && Flag.IS_INTERNAL(visibility)
 

@@ -9,8 +9,6 @@ import kotlinx.validation.api.*
 import org.gradle.api.*
 import org.gradle.api.file.*
 import org.gradle.api.tasks.*
-import org.jetbrains.kotlin.gradle.dsl.*
-import org.jetbrains.kotlin.gradle.plugin.*
 import java.io.*
 
 open class KotlinApiBuildTask : DefaultTask() {
@@ -27,6 +25,9 @@ open class KotlinApiBuildTask : DefaultTask() {
 
     @OutputDirectory
     lateinit var outputApiDir: File
+
+    @get:Input
+    val includeReified : Boolean get() = extension.includeReified
 
     @get:Input
     val ignoredPackages : Set<String> get() = extension.ignoredPackages
@@ -50,6 +51,7 @@ open class KotlinApiBuildTask : DefaultTask() {
             .loadApiFromJvmClasses()
             .filterOutNonPublic(ignoredPackages, ignoredClasses)
             .filterOutAnnotated(nonPublicMarkers.map { it.replace(".", "/") }.toSet())
+            .filterOutReified(includeReified)
 
         outputApiDir.resolve("${project.name}.api").bufferedWriter().use { writer ->
             signatures
